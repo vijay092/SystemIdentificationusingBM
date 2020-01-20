@@ -1,4 +1,4 @@
-# SystemIdentificationusingBM
+# System Identification using BM
 
 
 Investigating the feasibility of using Burer-Monteiro for solving a system identification problem cast as an SDP. 
