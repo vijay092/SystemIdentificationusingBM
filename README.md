@@ -1,2 +1,2 @@
 # SystemIdentificationusingBM
-$s_2$
+$$s_2$$
