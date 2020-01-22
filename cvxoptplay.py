@@ -6,25 +6,17 @@ Created on Tue Jan 21 12:04:15 2020
 """
 
 
-from cvxopt import matrix, solvers
 import picos as pic 
 import cvxopt as cvx
 
 
 '''
-I'm trying to munderstand this cvxopt. I want to be able to solve an sdp using
+I'm trying to understand cvxopt. I want to be able to solve an sdp using
 cvxopt. 
 
 
 '''
 
-
-c = matrix([1., 1.,1.])
-G =[ matrix([[-1., 0., 0., 0.], [0., -1., -1., 0.],[0., 0., 0., -1.]])]
-h = [ matrix([[1., 1.], [1., 0.]]) ]
-sol = solvers.sdp(c, Gs=G, hs=h)
-
-print(sol['x'])
 
 #---------------------------------#
 # First generate some data :      #
