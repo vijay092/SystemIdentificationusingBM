@@ -46,7 +46,7 @@ cvx.matrix([[1,2,0,0,0],
                 [1,0,0,2,0]]),
 cvx.matrix([[1,0,3,0,1],
                 [0,3,2,0,0],
-                [1,0,0,2,0]])
+                [1,0,0,2,1]])
 ]
 
 c = cvx.matrix([1,2,3,4,5])
@@ -68,7 +68,7 @@ prob_SDP_c_primal.add_constraint(
         )
         >> cc*cc.T )
 prob_SDP_c_primal.add_constraint(mu>0)
-prob_SDP_c_primal.set_objective('min',1|mu)
+prob_SDP_c_primal.set_objective('min',pic.sum(mu))
 
 #solve the problem and retrieve the weights of the optimal design
 print(prob_SDP_c_primal)
