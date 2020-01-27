@@ -24,10 +24,15 @@ Going to implement this using picos
 import picos as pic
 import cvxopt as cvx
 import numpy as np
+from scipy import signal
 
+# State Matrices of the system to be identified
+A = np.array([[-1, 0],[0, -2]])
+B = np.array([[0],[1]])
+C = np.array([0,1])
 
-
-A = np.array([[1,0],[4,5]])
-
-A_cvx = cvx.matrix(A)
-
+# Define the system
+system = signal.lti(A, B, C, 0.)
+t = np.linspace(0, 5)   
+u = np.ones_like(t)
+tout, y, x = signal.lsim(system, u, t)
