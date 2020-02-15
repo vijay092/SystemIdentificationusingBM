@@ -35,24 +35,24 @@ def Rinv(v):
 
 
 # State Matrices of the system to be identified
-A = np.array([[-1, 0],[0, -2]])
-B = np.array([[0],[1]])
+A = np.array([[-1, 1],[.99, -10]])
+B = np.array([[1],[1]])
 C = np.array([0,1])
 n = len(A)
 
 # Define the system
 system = signal.lti(A, B, C, 0.)
-t = np.linspace(0, 5)   
+t = np.linspace(0, 50)   
 u = np.ones_like(t)
 tout, y, x = signal.lsim(system, u, t)
 x = np.transpose(x)
 
 # Construct relevant matrices 
-X1_til = x[:-1];
-X2_til = x[1:];
-U1 = u[:-1]
+X1_til = x[:,:-1];
+X2_til = x[:,1:];
+U1 = u[:-1];
 XU =  Rinv(np.vstack((X1_til,U1)));
-X = np.dot(X2_til, XU)
+X = np.dot(X2_til, XU); 
 X1 = X[:n,:n]
 X2 = X[:,n:]
 
@@ -64,15 +64,17 @@ eps = 25;
 # The problem in picos 
 sysid = pic.Problem();
 X1_cvx = cvx.matrix(X1);
-X1_para=pic.new_param('X1p',X1_cvx)
+X1p=pic.new_param('X1p',X1_cvx)
 
 # The arguments
-P = sysid.add_variable('P',(2,2));
-Q = sysid.add_variable('Q',(2,2));
-
+P = sysid.add_variable('P');
+#Q = sysid.add_variable('Q',(2,2),'real');
 # Constraint
 sysid.remove_all_constraints()
-sysid.add_constraint((P & Q.T) // (Q & P) >> 0 )
-
+#sysid.add_constraint(P >> 0 )
 # Objective fucnction
+sysid.set_objective('min',P)
+sysid.solve(verbose=0, solver='cvxopt')
+
+
 
