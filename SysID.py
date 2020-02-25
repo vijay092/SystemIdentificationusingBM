@@ -67,14 +67,18 @@ X1_cvx = cvx.matrix(X1);
 X1p=pic.new_param('X1p',X1_cvx)
 
 # The arguments
-P = sysid.add_variable('P');
-#Q = sysid.add_variable('Q',(2,2),'real');
+P = sysid.add_variable('P',(2,2),'symmetric');
+Q = sysid.add_variable('Q',(2,2));
+gam = sysid.add_variable('gam')
+
 # Constraint
 sysid.remove_all_constraints()
-#sysid.add_constraint(P >> 0 )
-# Objective fucnction
-sysid.set_objective('min',P)
-sysid.solve(verbose=0, solver='cvxopt')
+sysid.add_constraint(P >> 0 )
+sysid.add_constraint((P & Q.T)// (Q & P) >> 0 )
+sysid.add_constraint(abs(X1p*P - Q) < gam)
+# Objective function
+sysid.set_objective('min', gam);
+sysid.solve(verbose=1, solver='cvxopt');
 
 
 
