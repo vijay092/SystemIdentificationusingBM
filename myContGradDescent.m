@@ -1,22 +1,17 @@
 
-addpath('C:\Users\sanja\Google Drive\casadi-windows-matlabR2016a-v3.5.1')
-import casadi.*
-clear all;
-close all;
-set(0,'DefaultFigureWindowStyle','docked')
-
-
-n = 10;
-ts = 0.5;
-csys = rss(n);
+clear all; close all
+n = 500;
+csys = rss(n); 
+ts = .1;
 sys = c2d(csys, ts);
 
 
 % Full order system matrices: 
-t = 0:ts:10;
+t = 0:ts:2;
 X = zeros(n,length(t));
 Y = zeros(1,length(t)-1);
 A = sys.A; B = sys.B; C = sys.C; D = sys.D;
+n = length(A);
 for i = 1:(length(t)-1)
     X(:,i+1) = A*X(:,i) + B;
     Y(:,i) = C*X(:,i) + D;  
@@ -34,26 +29,16 @@ U1 = u(1:end-1);
 X = X2_til*Rinv([X1_til;U1]);
 X1 = X(1:n,1:n);
 
-% Weighting matrices:
-X1 = X1;
-X2 = [eye(n); zeros(n)];
-X3 =  X2';
-X4 = [zeros(n);eye(n)];
+% In this section, I have computed the analytical gradient and instead of
+% doing the vanilla gradient descent, I used the continuous version of it
+% because i was having problems with constant step size-- I am working on
+% adaptive step size now. 
+gradFun = @(t,x) gradODE(t,x,X1);
+options = odeset('RelTol',1e-1,'AbsTol',1e-2);
+[t,x_opt] = ode23(gradFun,t, rand((2*n)^2,1),options);
 
-% Optimization
-nrow = 2*n;
-ncol = 2*n;
-x0 = 0.1*rand(nrow*ncol,1);
-fun = @(x) CostFn(x,X1,X2, X3, X4, nrow,ncol);
-options = optimoptions(@fminunc,'MaxFunctionEvaluations',4e5,...
-            'MaxIterations',1e3, 'PlotFcn', 'optimplotfval',...
-            'OptimalityTolerance',1e-10,...
-            'StepTolerance',1e-10)
-tic        
-x_opt = fminunc(fun,x0,options);
-toc
 % Get back required matrices:
-U_opt = reshape(x_opt,nrow,ncol);
+U_opt = reshape(x_opt(end,:),2*n, 2*n);
 V_opt = U_opt * U_opt';
 P_opt = V_opt(1:n,1:n);
 Q_opt = V_opt(1:n,n+1:end);
@@ -75,7 +60,5 @@ end
 figure(1)
 hold on;
 plot(y_id,'r*')
-
-
 
 

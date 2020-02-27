@@ -50,11 +50,14 @@ set(0,'DefaultFigureWindowStyle','docked')
 % grad_zero.U1_1
 
 
-syms V [2,2] real
+syms P [2,2] real
+syms Q [2,2] real
 
-V(2,2) = V(1,1)
-V(2,1) = V(1,2)
-reshape(gradient(trace(V(1,2)*V(1,1)),reshape(V,4,1)),2,2)
+
+V = reshape([P Q; Q' P],16,1)
+reshape(gradient(norm(P-Q,'fro')^2,V),4,4)
+
+
 
 
 
