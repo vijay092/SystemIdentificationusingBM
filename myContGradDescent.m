@@ -1,13 +1,13 @@
 
 clear all; close all
-n = 500;
+n = 2;
 csys = rss(n); 
 ts = .1;
 sys = c2d(csys, ts);
 
 
 % Full order system matrices: 
-t = 0:ts:2;
+t = 0:ts:5;
 X = zeros(n,length(t));
 Y = zeros(1,length(t)-1);
 A = sys.A; B = sys.B; C = sys.C; D = sys.D;
@@ -34,8 +34,8 @@ X1 = X(1:n,1:n);
 % because i was having problems with constant step size-- I am working on
 % adaptive step size now. 
 gradFun = @(t,x) gradODE(t,x,X1);
-options = odeset('RelTol',1e-1,'AbsTol',1e-2);
-[t,x_opt] = ode23(gradFun,t, rand((2*n)^2,1),options);
+options = odeset('RelTol',1e-6,'AbsTol',1e-8);
+[t,x_opt] = ode23(gradFun,t, rand((2*n)^2,1));
 
 % Get back required matrices:
 U_opt = reshape(x_opt(end,:),2*n, 2*n);

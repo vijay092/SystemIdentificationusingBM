@@ -11,9 +11,9 @@ U = reshape(x,nu,nu);
 V = U*U';
 P = V(1:n,1:n);
 Q = V(1:n,n+1:end);
-t
-grad = -100*[(X1'*X1*P - Q'*X1), (-X1*P + Q) ;...
-            (-X1*P + Q)'  , (X1'*X1*P - Q'*X1)]*U; 
+
+grad = -1000*[(X1'*X1*P - Q'*X1), (-X1*P + Q) ;...
+            (-X1*P + Q)'  , (X1'*X1*P - Q'*X1)]*U ; 
 
 grad = reshape(grad,nu^2,1);
 
