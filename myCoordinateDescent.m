@@ -31,19 +31,15 @@ X1 = X(1:n,1:n);
 nrow = 2*n;
 ncol = 5;
 
-% In this section, I have computed the analytical gradient and instead of
-% doing the vanilla gradient descent, I used the continuous version of it
-% because i was having problems with constant step size-- I am working on
-% adaptive step size now. 
-gradFun = @(t,x) gradODE(t,x,X1,nrow,ncol);
+gradFun = gradODE(0,x,X1,nrow,ncol);
 
 
 %options = odeset('RelTol',1e-6,'AbsTol',1e-8);
 [t,x_opt] = ode23(gradFun,t, rand(nrow*ncol,1));
 
 % Get back required matrices:
-U_opt = reshape(x_opt(end,:),nrow, ncol) ;
-V_opt = U_opt * U_opt' - eye(2*n);
+U_opt = reshape(x_opt(end,:),nrow, ncol);
+V_opt = U_opt * U_opt';
 P_opt = V_opt(1:n,1:n);
 Q_opt = V_opt(1:n,n+1:end);
 A_opt = (Q_opt * inv(P_opt));

@@ -50,12 +50,14 @@ set(0,'DefaultFigureWindowStyle','docked')
 % grad_zero.U1_1
 
 
-syms P [2,2] real
-syms Q [2,2] real
+syms P1 [2,2] real
+syms Q1 [2,2] real
+syms P2 [2,2] real
+syms Q2 [2,2] real
+syms dell [2,2] real
 
-
-V = reshape([P Q; Q' P],16,1)
-reshape(gradient(norm(P-Q,'fro')^2,V),4,4)
+V = reshape([P1, Q1; Q2 P2],16,1)
+reshape(jacobian(gradient(norm(P1-Q1,'fro')^2,V),V),16,16)
 
 
 
