@@ -12,7 +12,7 @@
 clear all; close all
 
 % Generate a random state-space system
-n = 2;
+n = 50;
 csys = rss(n); 
 ts = .5;
 sys = c2d(csys, ts);
@@ -50,7 +50,7 @@ ncol = 2*n;
 
 % This function has the gradient of the objective function
 gradFun = @(t,x) gradODE(t,x,X1,nrow,ncol,C);
-%options = odeset('RelTol',1e-6,'AbsTol',1e-8);
+options = odeset('RelTol',1e-3,'AbsTol',1e-5);
 lenLMI = nrow*ncol;
 lenL = nrow/2;
 
@@ -60,7 +60,7 @@ lenL = nrow/2;
 x0 = rand(lenLMI + lenL,1);
 
 % Solve using an ode solver: dot_U = -grad_U(F)
-[t,x_opt] = ode23(gradFun,t,x0);
+[t,x_opt] = ode23(gradFun,t,x0,options);
 
 % Get back required matrices:
 U_opt = reshape(x_opt(end,1:lenLMI),nrow, ncol) ;
@@ -90,4 +90,4 @@ hold on;
 plot(y_id,'r*','Linewidth',2)
 
 % To make sure the observer will converge..
-fprintf('Maximum eigen value = %f \n',max(eig(A_opt + L_opt'*C_opt)));
+fprintf('Maximum eigen value of A+LC = %f \n',max(eig(A_opt + L_opt'*C_opt)));
