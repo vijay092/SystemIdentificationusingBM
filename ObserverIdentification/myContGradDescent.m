@@ -12,14 +12,14 @@
 clear all; close all
 
 % Generate a random state-space system
-n = 50;
+n = 5;
 csys = rss(n); 
-ts = .5;
+ts = .1;
 sys = c2d(csys, ts);
 
 
 % Generate time-series data
-t = 0:ts:5;
+t = 0:ts:1;
 X = zeros(n,length(t));
 Y = zeros(1,length(t)-1);
 A = sys.A; B = sys.B; C = sys.C; D = sys.D;
@@ -50,7 +50,7 @@ ncol = 2*n;
 
 % This function has the gradient of the objective function
 gradFun = @(t,x) gradODE(t,x,X1,nrow,ncol,C);
-options = odeset('RelTol',1e-3,'AbsTol',1e-5);
+options = odeset('RelTol',1e-7,'AbsTol',1e-8);
 lenLMI = nrow*ncol;
 lenL = nrow/2;
 
